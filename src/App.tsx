@@ -519,6 +519,7 @@ const EveningView = ({
   });
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [savedPageUrl, setSavedPageUrl] = useState('');
 
   const probes = [
     { key: 'windiness' as const, label: '透風感 VENTILATION', min: '窒息 STIFLING', max: '空氣流通 AIRY', color: 'bg-zine-ink', val: '+2.4' },
@@ -529,9 +530,11 @@ const EveningView = ({
   const handleSave = async () => {
     setSaving(true);
     setSaveMessage('');
+    setSavedPageUrl('');
     try {
-      await saveOutfitLog({ userName, weather, sensory, outfit, userImage });
+      const savedPage = await saveOutfitLog({ userName, weather, sensory, outfit, userImage });
       setSaveMessage('已成功寫入 Notion');
+      setSavedPageUrl(savedPage.url);
     } catch (error) {
       console.error(error);
       setSaveMessage(error instanceof Error ? error.message : '寫入 Notion 失敗');
@@ -591,8 +594,18 @@ const EveningView = ({
       </div>
 
       {saveMessage && (
-        <div className="border-4 border-zine-ink bg-white px-4 py-3 font-mono text-xs font-black uppercase text-center">
-          {saveMessage}
+        <div className="border-4 border-zine-ink bg-white px-4 py-3 font-mono text-xs font-black uppercase text-center space-y-3">
+          <div>{saveMessage}</div>
+          {savedPageUrl && (
+            <a
+              href={savedPageUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block border-2 border-zine-ink bg-zine-teal px-4 py-2 text-zine-ink hover:bg-zine-yellow transition-colors"
+            >
+              打開 Notion 頁面
+            </a>
+          )}
         </div>
       )}
 
