@@ -25,10 +25,10 @@ export async function fetchSimilarOutfits(weather: WeatherData): Promise<Similar
 
   const response = await fetch(`/api/notion/similar-outfits?${query.toString()}`);
   const text = await response.text();
-  const body = text ? JSON.parse(text) : null;
+  const body = parseJsonResponse(text);
 
   if (!response.ok) {
-    throw new Error(body?.error || 'Unable to load similar outfit records.');
+    throw new Error(body?.error || text || 'Unable to load similar outfit records.');
   }
 
   return body as SimilarOutfitAnalysis;
@@ -73,11 +73,20 @@ export async function saveOutfitLog({
   });
 
   const text = await response.text();
-  const body = text ? JSON.parse(text) : null;
+  const body = parseJsonResponse(text);
 
   if (!response.ok) {
-    throw new Error(body?.details?.message || body?.error || 'Unable to save outfit log.');
+    throw new Error(body?.details?.message || body?.error || text || 'Unable to save outfit log.');
   }
 
   return body as { id: string; url: string };
+}
+
+function parseJsonResponse(text: string) {
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
