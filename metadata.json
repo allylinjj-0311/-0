@@ -1,0 +1,6 @@
+{
+  "name": "衣氣象 Climate Canvas",
+  "description": "A Zine-style investigative apparel tool that maps sensory data to climate, providing outfit percentages and sensory probes.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["Image Analysis", "Data Visualization", "Zine Aesthetic"]
+}
